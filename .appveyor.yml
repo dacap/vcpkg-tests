@@ -1,0 +1,27 @@
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      VCVARS_FILE: C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat
+      VCVARS_ARG:
+
+cache: C:\tools\vcpkg\installed\
+
+install:
+  - call "%VCVARS_FILE%" %VCVARS_ARG%
+  - cd C:/tools/vcpkg
+  - git pull
+  - vcpkg install pixman freetype harfbuzz
+
+clone_script:
+  - git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - git checkout -qf %APPVEYOR_REPO_COMMIT%
+  - git submodule update --init --recursive
+
+build_script:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - mkdir build
+  - cd build
+  - cmake .. -G "NMake Makefiles" -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+  - nmake
+  - ctest --output-on-failure
