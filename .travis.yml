@@ -1,0 +1,27 @@
+language: cpp
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode9
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7 libfreetype6-dev libharfbuzz-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - make
+  - ctest --output-on-failure
