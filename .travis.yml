@@ -12,7 +12,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-7 libfreetype6-dev libharfbuzz-dev
+            - g++-7 libpixman-1-dev libfreetype6-dev libharfbuzz-dev
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
